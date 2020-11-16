@@ -95,7 +95,6 @@ def register_product():
 
 
 def display_catalog():
-    # display title
     print_header("Current Catalog")
     for i in catalog:
         print_product_info(i)
@@ -148,8 +147,11 @@ def delete_product():
         if(not found):
             print("** Incorrect Id, try again")
 
+        return found
+
     except:
         print("** Invalid data format **")
+        return False
 
 
 def update_price():
@@ -158,21 +160,24 @@ def update_price():
 
     try:
         id = int(input("Enter Product Id to update price: "))
-        price = float(input("What is the new unit price? "))
 
         found = False
 
         for prod in catalog:
             if(id == prod.id):
                 found = True
+                price = float(input("What is the new unit price? "))
                 prod.price = price
                 print("** Updated Successfully: ")
                 print_product_info(prod)
         if(not found):
             print("** Invalid Product Id **")
 
+        return found
+
     except:
         print("** Error: Invalid Data Type Entry **")
+        return False
 
 
 def update_stock():
@@ -183,19 +188,51 @@ def update_stock():
 
     try:
         id = int(input("Enter Product Id to update price: "))
-        stock = int(input("What is the new stock amount? "))
 
         for prod in catalog:
             if(id == prod.id):
                 found = True
+                stock = int(input("What is the new stock amount? "))
                 prod.stock = stock
                 print("** Updated Successfully: ")
                 print_product_info(prod)
         if(not found):
             print("** Invalid Product Id **")
 
+        return found
+
     except:
         print("** Error: Invalid Data Type Entry **")
+        return False
+
+
+def most_expensive_items():
+    print_header(" Top Three Most Expensice Products")
+    # create array of prices (numbers only)
+    price = []
+    for prod in catalog:
+        price.append(prod.price)
+
+    # sort the array
+    price.sort(reverse=True)
+
+    # print three most expensive
+    print(price[0])
+    print(price[1])
+    print(price[2])
+
+
+def display_category():
+    print_header(" Product Categories in the Warehouse ")
+    # create array for categories
+    category = []
+    for prod in catalog:
+        # only add if the category is not already in category[]
+        if prod.category not in category:
+            category.append(prod.category)
+    # print array
+    for cat in category:
+        print(cat)
 
 
 # load our data, wait for user to see before pressing enter.
@@ -220,14 +257,18 @@ while(opc != 'x'):
     elif(opc == '5'):
         cheapest()
     elif(opc == '6'):
-        delete_product()
-        serialize_data()
+        if(delete_product()):
+            serialize_data()
     elif(opc == '7'):
-        update_price()
-        serialize_data()
+        if(update_price()):
+            serialize_data()
     elif(opc == '8'):
-        update_stock()
-        serialize_data()
+        if(update_stock()):
+            serialize_data()
+    elif(opc == '9'):
+        most_expensive_items()
+    elif(opc == '10'):
+        display_category()
     elif(opc == 's'):
         serialize_data()
 
